@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 /// <summary>
-/// 同样的字符串自会生成一份实例
+/// 同样的字符串只会生成一份实例
 /// （字符串会储存在stringPool内，不清除则无法回收）
 /// </summary>
 public static class PoolStringExtender

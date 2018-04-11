@@ -118,6 +118,7 @@ public static class EditableStringExtender
     //unsafe delegate void MemCpyImpl(byte* src, byte* dest, int len);
     //static MemCpyImpl memcpyimpl = (MemCpyImpl)Delegate.CreateDelegate(typeof(MemCpyImpl), typeof(Buffer).GetMethod("Memmove", BindingFlags.Static | BindingFlags.NonPublic));
 
+    //本想调用memcpy一类方法利用SIMD来快速复制数据，但系统没给正常的方法，可用的接口都是internal的，不同版本可能不一致。反正不在乎性能就先用普通的循环吧。
     static unsafe void StringCopy(char* src, char* dest, int len)
     {
         if (dest < src)
