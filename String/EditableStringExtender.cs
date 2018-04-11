@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
-using System;
 
 /// <summary>
-/// 谨记不要超出字符串原有大小
+/// 修改字符串内容
+/// （谨记不要超出字符串原有大小）
 /// </summary>
 public static class EditableStringExtender
 {
+#if UNITY_EDITOR
     [UnityEditor.MenuItem("Tools/Test/EditableStringExtender")]
     public static unsafe void DoIt()
     {
@@ -14,10 +15,11 @@ public static class EditableStringExtender
         a.UnsafeAppend(123);
         Debug.Log(a);
     }
+#endif
 
     public static string AllocateString(int length)
     {
-        string str = new string(' ', length);
+        string str = new string((char)0, length);
         str.UnsafeClear();
         return str;
     }
@@ -67,7 +69,7 @@ public static class EditableStringExtender
         fixed (char* ptr = str)
         {
             char* cptr = ptr + index;
-            StringCopy(cptr, cptr + length, str.Length - index);
+            StringCopy(cptr, cptr + length, str.Length + 1 - index);
 
             for (int i = 0; i < length; i++)
                 *(cptr + i) = *(v + i);
@@ -106,7 +108,7 @@ public static class EditableStringExtender
         int endIndex = index + length;
         fixed (char* ptr = str)
         {
-            StringCopy(ptr, ptr - length, strLength - endIndex);
+            StringCopy(ptr, ptr - length, strLength + 1 - endIndex);
             
             int* iptr = (int*)ptr - 1;
             *iptr = *iptr - length;
