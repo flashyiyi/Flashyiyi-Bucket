@@ -12,18 +12,19 @@ public static class PoolStringExtender
     public static unsafe void DoIt()
     {
         var chars = "13123".ToCharArray();
-        string a = PoolStringExtender.AllocatePoolString(chars);
-        string b = PoolStringExtender.AllocatePoolString(chars);
+        string a = PoolStringExtender.AllocatePoolString(chars,true);
+        string b = PoolStringExtender.AllocatePoolString(chars,true);
         Debug.Log(a);
         Debug.Log(b);
         Debug.Log((object)a == (object)b);
+        Debug.Log((object)a == (object)"13123");
         Debug.Log(PoolStringExtender.stringPool["13123".GetHashCode()]);
     }
 #endif
 
     public static Dictionary<int, string> stringPool = new Dictionary<int, string>();
 
-    public static unsafe string AllocatePoolString(char[] chars, int startIndex = 0, int length = -1)
+    public static unsafe string AllocatePoolString(char[] chars, bool intern = false, int startIndex = 0, int length = -1)
     {
         if (length == -1)
             length = chars.Length;
@@ -38,6 +39,10 @@ public static class PoolStringExtender
             else
             {
                 string newStr = new string(chars, startIndex, length);
+                if (intern)
+                {
+                    newStr = string.Intern(newStr);
+                }
                 stringPool.Add(hash,newStr);
                 return newStr;
             }
